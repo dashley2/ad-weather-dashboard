@@ -4,12 +4,17 @@ var cityInputEl = document.querySelector("#city-input");
 var formBtnEl = document.getElementById("formBtn");
 var cityInfoEl = document.querySelector("#city-container");
 var forecastEl = document.querySelector("#forecast");
+var historyEl = document.querySelector("#history-container");
+var cities = [];
 
 
 var formSubmitHandler = function(event) {
     event.preventDefault();
     var cityName = cityInputEl.value.trim();
     if (cityName) {
+        cities.push(cityName);
+        saveSearch();
+        loadSearch();
         retrieveCoordinates(cityName);
         cityInputEl.value = "";
         cityInfoEl.innerHTML = "";
@@ -18,6 +23,39 @@ var formSubmitHandler = function(event) {
         alert("Please enter a city.");
     }
 };
+
+var saveSearch = cityName => {
+    localStorage.setItem("cities", JSON.stringify(cities));
+};
+
+var loadSearch = function() {
+
+    historyEl.textContent = "";
+
+    var cities = JSON.parse(localStorage.getItem("cities"));
+    console.log(cities);
+
+    for(var i=0; i<cities.length; i++){
+        var cityBtn = document.createElement("btn");
+        cityBtn.className = "btn bg-secondary border-0 m-1 w-100 text-center text-white";
+        cityBtn.textContent = cities[i];
+        historyEl.appendChild(cityBtn);
+    }
+}
+
+window.onload = function() {
+    loadSearch();
+};
+
+historyEl.addEventListener("click" , function(event) {
+    var cityName = event.target.textContent;
+
+        cityInputEl.value = "";
+        cityInfoEl.innerHTML = "";
+        forecastEl.innerHTML = "";
+
+        retrieveCoordinates(cityName);
+});
 
 var retrieveCoordinates = function(city) {
     console.log(city);
