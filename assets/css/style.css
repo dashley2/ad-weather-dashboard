@@ -7,4 +7,36 @@ body {
 header {
     background-image: linear-gradient(180deg, #3304aa, #16abbb );
     color: white;
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+#search-container {
+    padding: 10px;
+    margin: 10px;
+}
+
+#history-container {
+    border-top: solid gray 2px;
+    margin-top: 10px;
+}
+
+#city-container {
+    border: solid gray 2px;
+    border-radius: 25px;
+    padding: 10px;
+    margin: 10px;
+}
+
+#forecast-container {
+    border: solid gray 2px;
+    border-radius: 25px;
+    padding: 10px;
+    margin: 10px;
+}
+
+.forecast {
+    background-color: gray;
+    color:white;
+    padding: 10px;
 }
