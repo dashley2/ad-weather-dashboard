@@ -28,6 +28,17 @@ var retrieveCoordinates = function(city) {
                 console.log(data);
                 var lat = data[0].lat;
                 var lon = data[0].lon;
+                var city = data[0].name;
+
+                var dateEl = document.createElement('span');
+                dateEl.textContent = " (" + moment().format('L') + ")";
+                console.log(moment().format('L'));
+
+                var cityTitle = document.createElement('h3');
+                cityTitle.textContent = city;
+                cityInfoEl.appendChild(cityTitle);
+                cityTitle.appendChild(dateEl);
+
                 fetchWeather(lat, lon);
             });
         } else {
