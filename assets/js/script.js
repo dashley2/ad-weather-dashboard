@@ -69,6 +69,37 @@ var fetchWeather = function(lat,lon) {
 };
 
 var displayWeather = data => {
+    var condition = data.current.weather[0].main;
+    if(condition === "Clouds") {
+        var icon = document.createElement('i');
+        icon.className = ("fa fa-solid fa-cloud");
+        cityInfoEl.appendChild(icon);
+    } else if (condition === "Thunderstorm") {
+        var icon = document.createElement('i');
+        icon.className = ("fa fa-solid fa-cloud-bolt");
+        cityInfoEl.appendChild(icon);
+    } else if (condition === "Drizzle") {
+        var icon = document.createElement('i');
+        icon.className = ("fa fa-solid fa-cloud-rain");
+        cityInfoEl.appendChild(icon);
+    }  else if (condition === "Rain") {
+        var icon = document.createElement('i');
+        icon.className = ("fa fa-solid fa-cloud-showers-heavy");
+        cityInfoEl.appendChild(icon);
+    }  else if (condition === "Snow") {
+        var icon = document.createElement('i');
+        icon.className = ("fa fa-solid fa-snowflake");
+        cityInfoEl.appendChild(icon);
+    }  else if (condition === "Clear") {
+        var icon = document.createElement('i');
+        icon.className = ("fa fa-solid fa-sun");
+        cityInfoEl.appendChild(icon);
+    } else {
+        var icon = document.createElement('i');
+        icon.className = ("fa fa-solid fa-smog");
+        cityInfoEl.appendChild(icon);
+    }
+
     var temp = document.createElement('p');
     temp.textContent = "Temp: "+ Math.ceil(data.current.temp) +"°F";
     cityInfoEl.appendChild(temp);
@@ -81,9 +112,23 @@ var displayWeather = data => {
     humidity.textContent = "Humidity: "+ Math.ceil(data.current.humidity)+"%";
     cityInfoEl.appendChild(humidity);
 
-    var uvi = document.createElement('p');
-    uvi.textContent = "UV Index: "+ data.current.uvi;
-    cityInfoEl.appendChild(uvi);
+    var uvi = data.current.uvi;
+    var uviEl = document.createElement('p');
+    var uviSpan = document.createElement('span');
+    uviSpan.textContent = uvi;
+
+    if(uvi<=2) {
+        uviSpan.className =("low-uvi")
+    } else if(uvi>2 && uvi<=7) {
+        uviSpan.className =("moderate-uvi")
+    } else if(uvi>7 && uvi<11) {
+        uviSpan.className =("high-uvi")
+    } else {
+        uviSpan.className =("extreme-uvi")
+    }
+    uviEl.textContent = "UV Index: "
+    cityInfoEl.appendChild(uviEl);
+    uviEl.appendChild(uviSpan);
 };
 
 
