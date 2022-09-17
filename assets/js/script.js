@@ -3,6 +3,7 @@ var formEl = document.querySelector("#city-form");
 var cityInputEl = document.querySelector("#city-input");
 var formBtnEl = document.getElementById("formBtn");
 var cityInfoEl = document.querySelector("#city-container");
+var forecastEl = document.querySelector("#forecast");
 
 
 var formSubmitHandler = function(event) {
@@ -12,6 +13,7 @@ var formSubmitHandler = function(event) {
         retrieveCoordinates(cityName);
         cityInputEl.value = "";
         cityInfoEl.innerHTML = "";
+        forecastEl.innerHTML = "";
     } else {
         alert("Please enter a city.");
     }
@@ -51,13 +53,14 @@ var retrieveCoordinates = function(city) {
 };
 
 var fetchWeather = function(lat,lon) {
-    var apiUrl = "https://api.openweathermap.org/data/2.5/onecall?lat="+lat+"&lon="+lon+"&units=imperial&exclude=hourly,daily&appid="+apiKey;
+    var apiUrl = "https://api.openweathermap.org/data/2.5/onecall?lat="+lat+"&lon="+lon+"&units=imperial&exclude=hourly,minutely&appid="+apiKey;
 
     fetch(apiUrl)
     .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
                 displayWeather(data);
+                displayForecast(data);
             });
         } else {
             alert('Error: Unable to connect to OpenWeatherMap.org');
@@ -131,5 +134,78 @@ var displayWeather = data => {
     uviEl.appendChild(uviSpan);
 };
 
+var displayForecast = data => {
+    console.log(data.daily);
+
+    for(var i =1; i < data.daily.length-2; i++) {
+        var div = document.createElement("div");
+        div.className = "forecast";
+
+        var temp = data.daily[i].temp.day;
+        var wind = data.daily[i].wind_speed;
+        var humidity = data.daily[i].humidity;
+
+        if(i===1) {
+            var date = moment().add(1, 'days').format('L')
+        } else if (i===2){
+            var date = moment().add(2, 'days').format('L')
+        } else if (i===3){
+            var date = moment().add(3, 'days').format('L')
+        } else if (i===4){
+            var date = moment().add(4, 'days').format('L')
+        } else if (i===5){
+            var date = moment().add(5, 'days').format('L')
+        };
+
+        var condition = data.daily[i].weather[0].main;
+        if(condition === "Clouds") {
+            var icon = document.createElement('i');
+            icon.className = ("fa fa-solid fa-cloud");
+            div.appendChild(icon);
+        } else if (condition === "Thunderstorm") {
+            var icon = document.createElement('i');
+            icon.className = ("fa fa-solid fa-cloud-bolt");
+            div.appendChild(icon);
+        } else if (condition === "Drizzle") {
+            var icon = document.createElement('i');
+            icon.className = ("fa fa-solid fa-cloud-rain");
+            div.appendChild(icon);
+        }  else if (condition === "Rain") {
+            var icon = document.createElement('i');
+            icon.className = ("fa fa-solid fa-cloud-showers-heavy");
+            div.appendChild(icon);
+        }  else if (condition === "Snow") {
+            var icon = document.createElement('i');
+            icon.className = ("fa fa-solid fa-snowflake");
+            div.appendChild(icon);
+        }  else if (condition === "Clear") {
+            var icon = document.createElement('i');
+            icon.className = ("fa fa-solid fa-sun");
+            div.appendChild(icon);
+        } else {
+            var icon = document.createElement('i');
+            icon.className = ("fa fa-solid fa-smog");
+            div.appendChild(icon);
+        }
+
+        var dateEl = document.createElement("h4");
+        dateEl.textContent = date;
+        div.appendChild(dateEl);
+
+        var tempEl = document.createElement("p");
+        tempEl.textContent="Temp: "+ Math.ceil(temp) +"°F";
+        div.appendChild(tempEl);
+
+        var windEl = document.createElement("p");
+        windEl.textContent="Wind: "+ Math.ceil(wind)+" MPH";
+        div.appendChild(windEl);
+
+        var humidityEl = document.createElement("p");
+        humidityEl.textContent="Humidity: "+ Math.ceil(humidity)+"%";
+        div.appendChild(humidityEl);
+
+        forecastEl.appendChild(div);
+    }
+};
 
 formEl.addEventListener("submit", formSubmitHandler);
